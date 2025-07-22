@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up - Password Keeper</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .box {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 400px;
+    }
+    input {
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      width: 100%;
+      background-color: #007bff;
+      color: #fff;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <h2>Create Account</h2>
+    <h2><marquee>apka data koi nhi dek skta admin be nhi </marquee></h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="signupBtn">Sign Up</button>
+    <p>Already have an account? <a href="index.html">Login</a></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDJpJHKZKwNNhgMQPSv2-_I8BpjZkmHOtQ",
+      authDomain: "pass-kepper-3fd0c.firebaseapp.com",
+      projectId: "pass-kepper-3fd0c",
+      storageBucket: "pass-kepper-3fd0c.appspot.com",
+      messagingSenderId: "1030861679949",
+      appId: "1:1030861679949:web:c49eccc6ed8474d8019b04",
+      measurementId: "G-ZYDYTWRD46"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const signupBtn = document.getElementById("signupBtn");
+    signupBtn.addEventListener("click", () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          alert("Signup successful!");
+          window.location.href = "dashboard.html";
+        })
+        .catch((error) => {
+          alert("Signup error: " + error.message);
+        });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Password Keeper Dashboard</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f4f4f4;
+      margin: 20px;
+    }
+    h2 {
+      text-align: center;
+    }
+    #form {
+      display: flex;
+      flex-direction: column;
+      max-width: 400px;
+      margin: auto;
+    }
+    input, button {
+      margin: 5px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .password-item {
+      background: white;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin: 10px auto;
+      max-width: 400px;
+      position: relative;
+    }
+    .delete-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: red;
+      color: white;
+      border: none;
+      padding: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>Password Keeper Dashboard</h2>
+
+  <div id="form">
+    <input type="text" id="site" placeholder="Site name (e.g. Gmail)" required />
+    <input type="text" id="username" placeholder="Username/Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button id="saveBtn">Save Password</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <h3 style="text-align:center;">Saved Passwords</h3>
+  <div id="passwordsList"></div>
+
+  <!-- Firebase Scripts -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDJpJHKZKwNNhgMQPSv2-_I8BpjZkmHOtQ",
+      authDomain: "pass-kepper-3fd0c.firebaseapp.com",
+      projectId: "pass-kepper-3fd0c",
+      storageBucket: "pass-kepper-3fd0c.appspot.com",
+      messagingSenderId: "1030861679949",
+      appId: "1:1030861679949:web:c49eccc6ed8474d8019b04",
+      measurementId: "G-ZYDYTWRD46"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth();
+
+    const passwordsList = document.getElementById("passwordsList");
+    const saveBtn = document.getElementById("saveBtn");
+
+    let currentUserEmail = null;
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        currentUserEmail = user.email;
+        loadPasswords();
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+
+    saveBtn.addEventListener("click", async () => {
+      const site = document.getElementById("site").value;
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      if (!site || !username || !password) return alert("Fill all fields");
+
+      await addDoc(collection(db, "passwords"), {
+        user: currentUserEmail,
+        site,
+        username,
+        password
+      });
+
+      document.getElementById("site").value = "";
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
+    });
+
+    function loadPasswords() {
+      const q = query(collection(db, "passwords"), where("user", "==", currentUserEmail));
+
+      onSnapshot(q, (snapshot) => {
+        passwordsList.innerHTML = "";
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          const div = document.createElement("div");
+          div.className = "password-item";
+          div.innerHTML = `
+            <strong>Site:</strong> ${data.site}<br/>
+            <strong>Username:</strong> ${data.username}<br/>
+            <strong>Password:</strong> ${data.password}
+            <button class="delete-btn" onclick="deletePassword('${docSnap.id}')">Delete</button>
+          `;
+          passwordsList.appendChild(div);
+        });
+      });
+    }
+
+    window.deletePassword = async (id) => {
+      await deleteDoc(doc(db, "passwords", id));
+    };
+
+    window.logout = async () => {
+      await signOut(auth);
+    };
+  </script>
+</body>
+</html>

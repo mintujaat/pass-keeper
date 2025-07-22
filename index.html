@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login | Pass Keeper</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #f5f7fa;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-box {
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .error {
+      color: red;
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-box">
+    <h2>Login to Dashboard</h2>
+   <h2><marquee>Data सिर्फ उसी user को दिखेगा जिसने save किया </marquee></h2>
+    <div class="error" id="error"></div>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button onclick="login()">Login</button>
+<p style="text-align:center; margin-top: 15px;">
+  Don't have an account? 
+  <a href="signup.html" style="color: #007bff; text-decoration: none;">Create one</a>
+</p>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script type="module">
+    // Firebase imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDJpJHKZKwNNhgMQPSv2-_I8BpjZkmHOtQ",
+      authDomain: "pass-kepper-3fd0c.firebaseapp.com",
+      projectId: "pass-kepper-3fd0c",
+      storageBucket: "pass-kepper-3fd0c.firebasestorage.app",
+      messagingSenderId: "1030861679949",
+      appId: "1:1030861679949:web:c49eccc6ed8474d8019b04",
+      measurementId: "G-ZYDYTWRD46"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.login = function () {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const errorDiv = document.getElementById("error");
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Login successful
+          window.location.href = "dashboard.html";
+        })
+        .catch((error) => {
+          errorDiv.textContent = "Login failed: " + error.message;
+        });
+    }
+  </script>
+
+</body>
+</html>
