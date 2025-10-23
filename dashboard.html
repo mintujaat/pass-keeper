@@ -1,263 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Password Keeper Dashboard</title>
-<style>
-  * {
-    margin: 0; padding: 0; box-sizing: border-box;
-    font-family: 'Segoe UI', sans-serif;
-  }
-
-  body {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    color: #fff;
-    padding: 10px;
-  }
-
-  .dashboard-card {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 14px;
-    width: 100%;
-    max-width: 500px;
-    padding: 30px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    animation: fadeIn 0.8s ease;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 2em;
-    word-wrap: break-word;
-  }
-
-  input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 12px;
-    border: none;
-    border-radius: 8px;
-    background: rgba(255,255,255,0.1);
-    color: #fff;
-    font-size: 1em;
-    outline: none;
-    transition: 0.2s;
-  }
-
-  input:focus {
-    background: rgba(255,255,255,0.2);
-  }
-
-  button {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 12px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1em;
-    cursor: pointer;
-    color: #fff;
-    background: linear-gradient(90deg, #007bff, #00c6ff);
-    transition: transform 0.2s ease, opacity 0.2s;
-  }
-
-  button:hover {
-    transform: scale(1.02);
-    opacity: 0.9;
-  }
-
-  .password-item {
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(8px);
-    border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 12px;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    word-wrap: break-word;
-  }
-
-  .actions {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 8px;
-  }
-
-  .action-btn {
-    flex: 1 1 30%;
-    padding: 8px 0;
-    border-radius: 6px;
-    border: none;
-    background: rgba(255,255,255,0.1);
-    color: #fff;
-    font-size: 0.9em;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-
-  .action-btn:hover {
-    background: linear-gradient(90deg, #007bff, #00c6ff);
-  }
-
-  .delete-btn {
-    background: rgba(248,81,73,0.9);
-  }
-
-  .delete-btn:hover {
-    background: #c93b34;
-  }
-
-  /* Fully responsive adjustments */
-  @media (max-width: 600px) {
-    .dashboard-card {
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Password Keeper Dashboard</title>
+  <style>
+    :root {
+      --bg: #0e1117;
+      --card: #161b22;
+      --text: #e6edf3;
+      --accent: #2f81f7;
+      --danger: #f85149;
+    }
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
       padding: 20px;
     }
-    h2 {
-      font-size: 1.6em;
+    h2, h3 {
+      text-align: center;
+    }
+    #form {
+      display: flex;
+      flex-direction: column;
+      max-width: 400px;
+      margin: 20px auto;
+      background: var(--card);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
     }
     input, button {
-      font-size: 0.95em;
+      margin: 6px 0;
       padding: 10px;
+      font-size: 15px;
+      border-radius: 6px;
+      border: none;
+    }
+    input {
+      background: #21262d;
+      color: var(--text);
+    }
+    button {
+      background: var(--accent);
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      opacity: 0.85;
+    }
+    .password-item {
+      background: var(--card);
+      border: 1px solid #30363d;
+      padding: 15px;
+      margin: 12px auto;
+      max-width: 400px;
+      border-radius: 10px;
+      position: relative;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
     }
     .action-btn {
-      flex: 1 1 45%;
+      background: #30363d;
+      color: var(--text);
+      border: none;
+      padding: 5px 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
     }
-  }
-
-  @media (max-width: 400px) {
-    h2 {
-      font-size: 1.4em;
+    .action-btn:hover {
+      background: var(--accent);
     }
-    .action-btn {
-      flex: 1 1 100%;
+    .delete-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--danger);
+      color: white;
+      border: none;
+      padding: 5px 8px;
+      border-radius: 5px;
+      cursor: pointer;
     }
-  }
-</style>
+  </style>
 </head>
 <body>
-
-<div class="dashboard-card">
   <h2>🔐 Password Keeper Dashboard</h2>
-  <input type="text" id="site" placeholder="Site name (e.g. Gmail)" required />
-  <input type="text" id="username" placeholder="Username/Email" required />
-  <input type="password" id="password" placeholder="Password" required />
-  <button id="saveBtn">💾 Save Password</button>
-  <button onclick="logout()">🚪 Logout</button>
 
+  <div id="form">
+    <input type="text" id="site" placeholder="Site name (e.g. Gmail)" required />
+    <input type="text" id="username" placeholder="Username/Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button id="saveBtn">💾 Save Password</button>
+    <button onclick="logout()">🚪 Logout</button>
+  </div>
+
+  <h3>Saved Passwords</h3>
   <div id="passwordsList"></div>
-</div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, onSnapshot, query, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDJpJHKZKwNNhgMQPSv2-_I8BpjZkmHOtQ",
-    authDomain: "pass-kepper-3fd0c.firebaseapp.com",
-    projectId: "pass-kepper-3fd0c",
-    storageBucket: "pass-kepper-3fd0c.appspot.com",
-    messagingSenderId: "1030861679949",
-    appId: "1:1030861679949:web:c49eccc6ed8474d8019b04",
-    measurementId: "G-ZYDYTWRD46"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyDJpJHKZKwNNhgMQPSv2-_I8BpjZkmHOtQ",
+      authDomain: "pass-kepper-3fd0c.firebaseapp.com",
+      projectId: "pass-kepper-3fd0c",
+      storageBucket: "pass-kepper-3fd0c.appspot.com",
+      messagingSenderId: "1030861679949",
+      appId: "1:1030861679949:web:c49eccc6ed8474d8019b04",
+      measurementId: "G-ZYDYTWRD46"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const auth = getAuth();
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth();
 
-  const passwordsList = document.getElementById("passwordsList");
-  const saveBtn = document.getElementById("saveBtn");
-  let currentUserEmail = null;
+    const passwordsList = document.getElementById("passwordsList");
+    const saveBtn = document.getElementById("saveBtn");
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      currentUserEmail = user.email;
-      loadPasswords();
-    } else {
-      window.location.href = "index.html";
-    }
-  });
+    let currentUserEmail = null;
 
-  saveBtn.addEventListener("click", async () => {
-    const site = document.getElementById("site").value.trim();
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-    if (!site || !username || !password) return alert("Fill all fields");
-
-    await addDoc(collection(db, "passwords"), { user: currentUserEmail, site, username, password });
-
-    document.getElementById("site").value = "";
-    document.getElementById("username").value = "";
-    document.getElementById("password").value = "";
-  });
-
-  function loadPasswords() {
-    const q = query(collection(db, "passwords"), where("user", "==", currentUserEmail));
-    onSnapshot(q, (snapshot) => {
-      passwordsList.innerHTML = "";
-      snapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const id = docSnap.id;
-
-        const div = document.createElement("div");
-        div.className = "password-item";
-        div.innerHTML = `
-          <strong>Site:</strong> ${data.site}<br/>
-          <strong>Username:</strong> ${data.username}<br/>
-          <strong>Password:</strong> <span id="pass-${id}">•••••••</span>
-          <div class="actions">
-            <button class="action-btn" onclick="togglePassword('${id}', '${data.password}')">👁 View</button>
-            <button class="action-btn" onclick="copyPassword('${data.password}')">📋 Copy</button>
-            <button class="action-btn delete-btn" onclick="deletePassword('${id}')">🗑 Delete</button>
-          </div>
-        `;
-        passwordsList.appendChild(div);
-      });
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        currentUserEmail = user.email;
+        loadPasswords();
+      } else {
+        window.location.href = "index.html";
+      }
     });
-  }
 
-  window.togglePassword = (id, actualPass) => {
-    const el = document.getElementById(`pass-${id}`);
-    el.textContent = (el.textContent === "•••••••") ? actualPass : "•••••••";
-  };
+    saveBtn.addEventListener("click", async () => {
+      const site = document.getElementById("site").value.trim();
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
 
-  window.copyPassword = async (password) => {
-    try {
-      await navigator.clipboard.writeText(password);
-      alert("Password copied!");
-    } catch {
-      alert("Failed to copy password.");
+      if (!site || !username || !password) return alert("Fill all fields");
+
+      await addDoc(collection(db, "passwords"), {
+        user: currentUserEmail,
+        site,
+        username,
+        password
+      });
+
+      document.getElementById("site").value = "";
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
+    });
+
+    function loadPasswords() {
+      const q = query(collection(db, "passwords"), where("user", "==", currentUserEmail));
+
+      onSnapshot(q, (snapshot) => {
+        passwordsList.innerHTML = "";
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          const id = docSnap.id;
+
+          const div = document.createElement("div");
+          div.className = "password-item";
+          div.innerHTML = `
+            <strong>Site:</strong> ${data.site}<br/>
+            <strong>Username:</strong> ${data.username}<br/>
+            <strong>Password:</strong> <span id="pass-${id}">•••••••</span>
+            <div class="actions">
+              <button class="action-btn" onclick="togglePassword('${id}', '${data.password}')">👁 View</button>
+              <button class="action-btn" onclick="copyPassword('${data.password}')">📋 Copy</button>
+            </div>
+            <button class="delete-btn" onclick="deletePassword('${id}')">Delete</button>
+          `;
+          passwordsList.appendChild(div);
+        });
+      });
     }
-  };
 
-  window.deletePassword = async (id) => {
-    await deleteDoc(doc(db, "passwords", id));
-  };
+    window.togglePassword = (id, actualPass) => {
+      const el = document.getElementById(`pass-${id}`);
+      if (el.textContent === "•••••••") {
+        el.textContent = actualPass;
+      } else {
+        el.textContent = "•••••••";
+      }
+    };
 
-  window.logout = async () => {
-    await signOut(auth);
-  };
-</script>
+    window.copyPassword = async (password) => {
+      try {
+        await navigator.clipboard.writeText(password);
+        alert("Password copied!");
+      } catch {
+        alert("Failed to copy password.");
+      }
+    };
 
+    window.deletePassword = async (id) => {
+      await deleteDoc(doc(db, "passwords", id));
+    };
+
+    window.logout = async () => {
+      await signOut(auth);
+    };
+  </script>
 </body>
 </html>
