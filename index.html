@@ -5,75 +5,136 @@
   <title>Login | Pass Keeper</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, sans-serif;
+    }
+
     body {
-      background: #f5f7fa;
-      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
     }
+
     .login-box {
-      background: #fff;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 40px 35px;
+      border-radius: 14px;
       width: 100%;
       max-width: 400px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      animation: fadeIn 0.8s ease;
     }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     h2 {
       text-align: center;
-      margin-bottom: 20px;
-      color: #333;
+      margin-bottom: 10px;
+      font-size: 26px;
+      letter-spacing: 0.5px;
+      color: #fff;
     }
+
+    p.note {
+      text-align: center;
+      font-size: 13px;
+      color: #bbb;
+      margin-bottom: 20px;
+    }
+
     input {
       width: 100%;
       padding: 12px;
       margin-bottom: 15px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
       font-size: 16px;
+      outline: none;
+      transition: 0.2s;
     }
+
+    input:focus {
+      background: rgba(255,255,255,0.2);
+    }
+
     button {
       width: 100%;
       padding: 12px;
-      background: #007bff;
-      color: #fff;
+      background: linear-gradient(90deg, #007bff, #00c6ff);
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
+      color: #fff;
       font-size: 16px;
       cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s;
     }
+
     button:hover {
-      background: #0056b3;
+      transform: scale(1.02);
+      opacity: 0.9;
     }
+
     .error {
-      color: red;
+      color: #ff4b4b;
       text-align: center;
       margin-bottom: 10px;
       font-size: 14px;
+    }
+
+    .signup-link {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 14px;
+      color: #bbb;
+    }
+
+    .signup-link a {
+      color: #00c6ff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .login-box {
+        padding: 30px 25px;
+      }
     }
   </style>
 </head>
 <body>
 
   <div class="login-box">
-    <h2>Login to Dashboard</h2>
-   <h2><marquee>Data सिर्फ उसी user को दिखेगा जिसने save किया </marquee></h2>
+    <h2>Welcome Back 👋</h2>
+    <p class="note">Only your own saved passwords will be visible</p>
+
     <div class="error" id="error"></div>
     <input type="email" id="email" placeholder="Email" required>
     <input type="password" id="password" placeholder="Password" required>
     <button onclick="login()">Login</button>
-<p style="text-align:center; margin-top: 15px;">
-  Don't have an account? 
-  <a href="signup.html" style="color: #007bff; text-decoration: none;">Create one</a>
-</p>
+
+    <p class="signup-link">
+      Don’t have an account? 
+      <a href="signup.html">Create one</a>
+    </p>
   </div>
 
   <!-- Firebase SDKs -->
   <script type="module">
-    // Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
@@ -96,15 +157,11 @@
       const errorDiv = document.getElementById("error");
 
       signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          // Login successful
-          window.location.href = "dashboard.html";
-        })
+        .then(() => window.location.href = "dashboard.html")
         .catch((error) => {
           errorDiv.textContent = "Login failed: " + error.message;
         });
     }
   </script>
-
 </body>
 </html>
