@@ -1,56 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><link rel="stylesheet" href="style.css">
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign Up - Password Keeper</title>
+  <title>Sign Up | Pass Keeper</title>
   <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, sans-serif;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
     }
+
     .box {
-      background: #fff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      width: 90%;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 40px 35px;
+      border-radius: 14px;
+      width: 100%;
       max-width: 400px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      animation: fadeIn 0.8s ease;
     }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 26px;
+      letter-spacing: 0.5px;
+      color: #fff;
+    }
+
+    p.note {
+      text-align: center;
+      font-size: 13px;
+      color: #bbb;
+      margin-bottom: 20px;
+    }
+
     input {
       width: 100%;
-      margin: 10px 0;
       padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+      transition: 0.2s;
     }
+
+    input:focus {
+      background: rgba(255,255,255,0.2);
+    }
+
     button {
       width: 100%;
-      background-color: #007bff;
-      color: #fff;
       padding: 12px;
+      background: linear-gradient(90deg, #007bff, #00c6ff);
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 16px;
       cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s;
     }
+
     button:hover {
-      background-color: #0056b3;
+      transform: scale(1.02);
+      opacity: 0.9;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 14px;
+      color: #bbb;
+    }
+
+    .login-link a {
+      color: #00c6ff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .box {
+        padding: 30px 25px;
+      }
     }
   </style>
 </head>
 <body>
 
   <div class="box">
-    <h2>Create Account</h2>
-    <h2><marquee>apka data koi nhi dek skta admin be nhi </marquee></h2>
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
+    <h2>Create Account 🔐</h2>
+    <p class="note">Your passwords are encrypted and private — even admin can’t view them.</p>
+
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
     <button id="signupBtn">Sign Up</button>
-    <p>Already have an account? <a href="index.html">Login</a></p>
+
+    <p class="login-link">
+      Already have an account? 
+      <a href="index.html">Login</a>
+    </p>
   </div>
 
   <script type="module">
@@ -72,11 +144,16 @@
 
     const signupBtn = document.getElementById("signupBtn");
     signupBtn.addEventListener("click", () => {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!email || !password) {
+        alert("Please fill all fields");
+        return;
+      }
 
       createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
+        .then(() => {
           alert("Signup successful!");
           window.location.href = "dashboard.html";
         })
