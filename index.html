@@ -5,115 +5,67 @@
   <title>Login | Pass Keeper</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * {
-      margin: 0; padding: 0; box-sizing: border-box;
-      font-family: 'Segoe UI', Roboto, sans-serif;
-    }
-
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Roboto, sans-serif; }
     body {
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: #fff;
+      background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+      color:#fff;
     }
 
     .login-box {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255,255,255,0.08);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255,255,255,0.1);
       padding: 40px 35px;
       border-radius: 14px;
       width: 100%;
       max-width: 400px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      box-shadow:0 8px 32px rgba(0,0,0,0.3);
       animation: fadeIn 0.8s ease;
+      position: relative;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeIn { from{opacity:0; transform:translateY(-20px);} to{opacity:1; transform:translateY(0);} }
 
-    h2 {
-      text-align: center;
-      margin-bottom: 10px;
-      font-size: 26px;
-      letter-spacing: 0.5px;
-      color: #fff;
-    }
+    h2 { text-align:center; margin-bottom:10px; font-size:26px; letter-spacing:0.5px; color:#fff; }
 
-    p.note {
-      text-align: center;
-      font-size: 13px;
-      color: #bbb;
-      margin-bottom: 20px;
-    }
+    p.note { text-align:center; font-size:13px; color:#bbb; margin-bottom:20px; }
 
     input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: none;
-      border-radius: 8px;
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-      font-size: 16px;
-      outline: none;
-      transition: 0.2s;
+      width:100%; padding:12px; margin-bottom:15px;
+      border:none; border-radius:8px; background:rgba(255,255,255,0.1);
+      color:#fff; font-size:16px; outline:none; transition:0.2s;
     }
 
-    input:focus {
-      background: rgba(255,255,255,0.2);
-    }
+    input:focus { background:rgba(255,255,255,0.2); }
 
     button {
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(90deg, #007bff, #00c6ff);
-      border: none;
-      border-radius: 8px;
-      color: #fff;
-      font-size: 16px;
-      cursor: pointer;
+      width:100%; padding:12px; background:linear-gradient(90deg,#007bff,#00c6ff);
+      border:none; border-radius:8px; color:#fff; font-size:16px; cursor:pointer;
       transition: transform 0.2s ease, opacity 0.2s;
     }
+    button:hover { transform:scale(1.02); opacity:0.9; }
 
-    button:hover {
-      transform: scale(1.02);
-      opacity: 0.9;
-    }
+    .signup-link { text-align:center; margin-top:18px; font-size:14px; color:#bbb; }
+    .signup-link a { color:#00c6ff; text-decoration:none; font-weight:500; }
+    .signup-link a:hover { text-decoration:underline; }
 
-    .error {
-      color: #ff4b4b;
-      text-align: center;
-      margin-bottom: 10px;
-      font-size: 14px;
-    }
+    .error { color:#ff4b4b; text-align:center; margin-bottom:10px; font-size:14px; }
 
-    .signup-link {
-      text-align: center;
-      margin-top: 18px;
-      font-size: 14px;
-      color: #bbb;
+    /* Notification Modal */
+    #notificationModal {
+      display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+      background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+      padding:20px 30px; border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,0.3);
+      color:#fff; text-align:center; z-index:9999; min-width:250px;
     }
+    #notificationModal .tick { font-size:24px; margin-bottom:8px; color:#00ff99; }
+    #notificationModal #notificationMessage { font-size:16px; }
 
-    .signup-link a {
-      color: #00c6ff;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .signup-link a:hover {
-      text-decoration: underline;
-    }
-
-    @media (max-width: 480px) {
-      .login-box {
-        padding: 30px 25px;
-      }
-    }
+    @media (max-width:480px){ .login-box{padding:30px 25px;} }
   </style>
 </head>
 <body>
@@ -133,7 +85,12 @@
     </p>
   </div>
 
-  <!-- Firebase SDKs -->
+  <!-- Notification Modal -->
+  <div id="notificationModal">
+    <div class="tick">✔</div>
+    <div id="notificationMessage">Login successful!</div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
@@ -151,17 +108,30 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
+    const notificationModal = document.getElementById("notificationModal");
+    const errorDiv = document.getElementById("error");
+
+    function showNotification(message){
+      notificationModal.querySelector("#notificationMessage").textContent = message;
+      notificationModal.style.display = "flex";
+      setTimeout(()=>notificationModal.style.display="none", 3000);
+    }
+
     window.login = function () {
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
-      const errorDiv = document.getElementById("error");
+      errorDiv.textContent = "";
 
       signInWithEmailAndPassword(auth, email, password)
-        .then(() => window.location.href = "dashboard.html")
+        .then(() => {
+          showNotification("Login successful!");
+          setTimeout(()=>{ window.location.href = "dashboard.html"; }, 3000);
+        })
         .catch((error) => {
           errorDiv.textContent = "Login failed: " + error.message;
         });
     }
   </script>
+
 </body>
 </html>
