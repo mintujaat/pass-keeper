@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Password Keeper Dashboard</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
 
     body {
       height: 100vh;
@@ -39,6 +42,7 @@
       font-size: 26px;
       letter-spacing: 0.5px;
       color: #fff;
+      word-wrap: break-word;
     }
 
     input {
@@ -89,6 +93,7 @@
       justify-content: space-between;
       margin-top: 8px;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     .action-btn {
@@ -118,6 +123,25 @@
     @media (max-width: 480px) {
       .dashboard-card {
         padding: 25px 20px;
+        width: 95%;
+      }
+
+      h2 {
+        font-size: 22px;
+      }
+
+      input, button {
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      .actions {
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .action-btn {
+        width: 100%;
       }
     }
   </style>
