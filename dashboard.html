@@ -5,119 +5,167 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Password Keeper Dashboard</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
   body {
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-    color:#fff;
-    padding:10px;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #fff;
+    padding: 10px;
   }
 
   .dashboard-card {
-    background: rgba(255,255,255,0.08);
+    background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(12px);
-    border:1px solid rgba(255,255,255,0.1);
-    border-radius:14px;
-    width:100%;
-    max-width:500px;
-    padding:30px;
-    box-shadow:0 8px 32px rgba(0,0,0,0.3);
-    display:flex;
-    flex-direction:column;
-    align-items:stretch;
-    animation:fadeIn 0.8s ease;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    width: 100%;
+    max-width: 500px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    animation: fadeIn 0.8s ease;
+    position: relative;
   }
 
-  @keyframes fadeIn { from {opacity:0; transform:translateY(-20px);} to {opacity:1; transform:translateY(0);} }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-  h2 { text-align:center; margin-bottom:20px; font-size:2em; word-wrap:break-word; }
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2em;
+    word-wrap: break-word;
+  }
 
   input {
-    width:100%; padding:12px; margin-bottom:12px; border:none; border-radius:8px;
-    background: rgba(255,255,255,0.1); color:#fff; font-size:1em; outline:none; transition:0.2s;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    font-size: 1em;
+    outline: none;
+    transition: 0.2s;
   }
-  input:focus { background: rgba(255,255,255,0.2); }
+
+  input:focus {
+    background: rgba(255,255,255,0.2);
+  }
 
   button {
-    width:100%; padding:12px; margin-bottom:12px; border:none; border-radius:8px; font-size:1em;
-    cursor:pointer; color:#fff; background: linear-gradient(90deg,#007bff,#00c6ff); transition:0.2s;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    color: #fff;
+    background: linear-gradient(90deg, #007bff, #00c6ff);
+    transition: transform 0.2s ease, opacity 0.2s;
   }
-  button:hover { transform:scale(1.02); opacity:0.9; }
+
+  button:hover {
+    transform: scale(1.02);
+    opacity: 0.9;
+  }
 
   .password-item {
     background: rgba(255,255,255,0.05);
     backdrop-filter: blur(8px);
-    border-radius:10px;
-    padding:12px;
-    margin-bottom:12px;
-    display:flex;
-    flex-direction:column;
-    width:100%;
-    word-wrap:break-word;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    word-wrap: break-word;
   }
 
   .actions {
-    display:flex;
-    justify-content:space-between;
-    flex-wrap:wrap;
-    gap:8px;
-    margin-top:8px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
   }
 
   .action-btn {
-    flex:1 1 30%;
-    padding:8px 0;
-    border-radius:6px;
-    border:none;
+    flex: 1 1 30%;
+    padding: 8px 0;
+    border-radius: 6px;
+    border: none;
     background: rgba(255,255,255,0.1);
-    color:#fff;
-    font-size:0.9em;
-    cursor:pointer;
-    transition:0.2s;
+    color: #fff;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: 0.2s;
   }
-  .action-btn:hover { background: linear-gradient(90deg,#007bff,#00c6ff); }
 
-  .delete-btn { background: rgba(248,81,73,0.9); }
-  .delete-btn:hover { background:#c93b34; }
-
-  /* Confirmation modal */
-  #confirmModal {
-    display:none;
-    position:fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background:rgba(0,0,0,0.5);
-    justify-content:center; align-items:center;
-    z-index:1000;
+  .action-btn:hover {
+    background: linear-gradient(90deg, #007bff, #00c6ff);
   }
-  #confirmModalContent {
+
+  .delete-btn {
+    background: rgba(248,81,73,0.9);
+  }
+
+  .delete-btn:hover {
+    background: #c93b34;
+  }
+
+  /* Notification Modal */
+  #notificationModal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(12px);
-    padding:20px; border-radius:12px;
-    width:90%; max-width:300px;
-    text-align:center;
+    backdrop-filter: blur(10px);
+    padding: 20px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    color: #fff;
+    text-align: center;
+    z-index: 9999;
+    min-width: 250px;
   }
-  #confirmModalContent p { margin-bottom:20px; font-size:1em; }
-  #confirmModalContent button {
-    padding:10px 20px; margin:0 5px; border:none; border-radius:8px; cursor:pointer;
-    font-weight:600;
-  }
-  #confirmYes { background: linear-gradient(90deg,#f85149,#ff5f5f); color:#fff; }
-  #confirmNo { background: rgba(255,255,255,0.1); color:#fff; }
 
-  /* Fully responsive */
-  @media(max-width:600px){
-    .dashboard-card{padding:20px;}
-    h2{font-size:1.6em;}
-    input, button{font-size:0.95em; padding:10px;}
-    .action-btn{flex:1 1 45%;}
+  #notificationModal .tick {
+    font-size: 24px;
+    margin-bottom: 8px;
+    color: #00ff99;
   }
-  @media(max-width:400px){
-    h2{font-size:1.4em;}
-    .action-btn{flex:1 1 100%;}
+
+  #notificationModal #notificationMessage {
+    font-size: 16px;
+  }
+
+  /* Fully responsive adjustments */
+  @media (max-width: 600px) {
+    .dashboard-card { padding: 20px; }
+    h2 { font-size: 1.6em; }
+    input, button { font-size: 0.95em; padding: 10px; }
+    .action-btn { flex: 1 1 45%; }
+  }
+
+  @media (max-width: 400px) {
+    h2 { font-size: 1.4em; }
+    .action-btn { flex: 1 1 100%; }
   }
 </style>
 </head>
@@ -134,109 +182,110 @@
   <div id="passwordsList"></div>
 </div>
 
-<!-- Confirmation Modal -->
-<div id="confirmModal">
-  <div id="confirmModalContent">
-    <p>Are you sure you want to delete this password?</p>
-    <button id="confirmYes">Yes</button>
-    <button id="confirmNo">No</button>
-  </div>
+<!-- Notification Modal -->
+<div id="notificationModal">
+  <div class="tick">✔</div>
+  <div id="notificationMessage"></div>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, onSnapshot, query, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDJpJHKZKwNNhgMQPSv2-_I8BpjZkmHOtQ",
-  authDomain: "pass-kepper-3fd0c.firebaseapp.com",
-  projectId: "pass-kepper-3fd0c",
-  storageBucket: "pass-kepper-3fd0c.appspot.com",
-  messagingSenderId: "1030861679949",
-  appId: "1:1030861679949:web:c49eccc6ed8474d8019b04",
-  measurementId: "G-ZYDYTWRD46"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyDJpJHKZKwNNhgMQPSv2-_I8BpjZkmHOtQ",
+    authDomain: "pass-kepper-3fd0c.firebaseapp.com",
+    projectId: "pass-kepper-3fd0c",
+    storageBucket: "pass-kepper-3fd0c.appspot.com",
+    messagingSenderId: "1030861679949",
+    appId: "1:1030861679949:web:c49eccc6ed8474d8019b04",
+    measurementId: "G-ZYDYTWRD46"
+  };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth();
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth();
 
-const passwordsList = document.getElementById("passwordsList");
-const saveBtn = document.getElementById("saveBtn");
-let currentUserEmail = null;
+  const passwordsList = document.getElementById("passwordsList");
+  const saveBtn = document.getElementById("saveBtn");
+  const notificationModal = document.getElementById("notificationModal");
+  const notificationMessage = document.getElementById("notificationMessage");
+  let currentUserEmail = null;
 
-let passwordToDelete = null; // temporary storage for modal
+  function showNotification(message) {
+    notificationMessage.textContent = message;
+    notificationModal.style.display = 'flex';
+    setTimeout(() => notificationModal.style.display = 'none', 3000);
+  }
 
-onAuthStateChanged(auth, (user) => {
-  if (user) { currentUserEmail = user.email; loadPasswords(); }
-  else { window.location.href="index.html"; }
-});
-
-saveBtn.addEventListener("click", async () => {
-  const site = document.getElementById("site").value.trim();
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
-  if(!site || !username || !password) return alert("Fill all fields");
-  await addDoc(collection(db,"passwords"),{user:currentUserEmail,site,username,password});
-  document.getElementById("site").value="";
-  document.getElementById("username").value="";
-  document.getElementById("password").value="";
-});
-
-function loadPasswords(){
-  const q = query(collection(db,"passwords"), where("user","==",currentUserEmail));
-  onSnapshot(q,(snapshot)=>{
-    passwordsList.innerHTML="";
-    snapshot.forEach(docSnap=>{
-      const data = docSnap.data();
-      const id = docSnap.id;
-      const div = document.createElement("div");
-      div.className="password-item";
-      div.innerHTML=`
-        <strong>Site:</strong> ${data.site}<br/>
-        <strong>Username:</strong> ${data.username}<br/>
-        <strong>Password:</strong> <span id="pass-${id}">•••••••</span>
-        <div class="actions">
-          <button class="action-btn" onclick="togglePassword('${id}','${data.password}')">👁 View</button>
-          <button class="action-btn" onclick="copyPassword('${data.password}')">📋 Copy</button>
-          <button class="action-btn delete-btn" onclick="deletePassword('${id}')">🗑 Delete</button>
-        </div>
-      `;
-      passwordsList.appendChild(div);
-    });
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      currentUserEmail = user.email;
+      loadPasswords();
+    } else {
+      window.location.href = "index.html";
+    }
   });
-}
 
-window.togglePassword = (id,actualPass)=>{
-  const el = document.getElementById(`pass-${id}`);
-  el.textContent=(el.textContent==="•••••••")?actualPass:"•••••••";
-};
+  saveBtn.addEventListener("click", async () => {
+    const site = document.getElementById("site").value.trim();
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+    if (!site || !username || !password) return alert("Fill all fields");
 
-window.copyPassword = async(password)=>{
-  try{await navigator.clipboard.writeText(password); alert("Password copied!");}
-  catch{alert("Failed to copy password.");}
-};
+    await addDoc(collection(db, "passwords"), { user: currentUserEmail, site, username, password });
 
-// Custom modal delete
-window.deletePassword=(id)=>{
-  passwordToDelete=id;
-  document.getElementById('confirmModal').style.display='flex';
-};
+    document.getElementById("site").value = "";
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
 
-document.getElementById('confirmYes').addEventListener('click',async()=>{
-  if(!passwordToDelete) return;
-  await deleteDoc(doc(db,"passwords",passwordToDelete));
-  passwordToDelete=null;
-  document.getElementById('confirmModal').style.display='none';
-});
+    showNotification("Password added successfully!");
+  });
 
-document.getElementById('confirmNo').addEventListener('click',()=>{
-  passwordToDelete=null;
-  document.getElementById('confirmModal').style.display='none';
-});
+  function loadPasswords() {
+    const q = query(collection(db, "passwords"), where("user", "==", currentUserEmail));
+    onSnapshot(q, (snapshot) => {
+      passwordsList.innerHTML = "";
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const id = docSnap.id;
 
-window.logout=async()=>{await signOut(auth);}
+        const div = document.createElement("div");
+        div.className = "password-item";
+        div.innerHTML = `
+          <strong>Site:</strong> ${data.site}<br/>
+          <strong>Username:</strong> ${data.username}<br/>
+          <strong>Password:</strong> <span id="pass-${id}">•••••••</span>
+          <div class="actions">
+            <button class="action-btn" onclick="togglePassword('${id}', '${data.password}')">👁 View</button>
+            <button class="action-btn" onclick="copyPassword('${data.password}')">📋 Copy</button>
+            <button class="action-btn delete-btn" onclick="deletePassword('${id}')">🗑 Delete</button>
+          </div>
+        `;
+        passwordsList.appendChild(div);
+      });
+    });
+  }
+
+  window.togglePassword = (id, actualPass) => {
+    const el = document.getElementById(`pass-${id}`);
+    el.textContent = (el.textContent === "•••••••") ? actualPass : "•••••••";
+  };
+
+  window.copyPassword = async (password) => {
+    try { await navigator.clipboard.writeText(password); showNotification("Password copied!"); }
+    catch { showNotification("Failed to copy password."); }
+  };
+
+  window.deletePassword = async (id) => {
+    await deleteDoc(doc(db, "passwords", id));
+    showNotification("Password deleted!");
+  };
+
+  window.logout = async () => {
+    await signOut(auth);
+  };
 </script>
 
 </body>
